@@ -11,16 +11,13 @@ epoch = 60
 temperature = 0.5
 
 def read_data(file_name):
-    '''
-     open and read text file
-    '''
-    text = open(file_name, 'r').read()
+    #open and read text file
+    text = open(file_name, 'r', encoding = "utf-8").read()
     return text.lower()
 
 def featurize(text):
-    '''
-     featurize the text to train and target dataset
-    '''
+    
+    #featurize the text to train and target dataset
     unique_chars = list(set(text))
     len_unique_chars = len(unique_chars)
 
@@ -41,9 +38,8 @@ def featurize(text):
     return train_data, target_data, unique_chars, len_unique_chars
 
 def rnn(x, weight, bias, len_unique_chars):
-    '''
-     define rnn cell and prediction
-    '''
+    
+    #define rnn cell and prediction
     x = tf.transpose(x, [1, 0, 2])
     x = tf.reshape(x, [-1, len_unique_chars])
     x = tf.split(x, max_len, 0)
@@ -54,18 +50,16 @@ def rnn(x, weight, bias, len_unique_chars):
     return prediction
 
 def sample(predicted):
-    '''
-     helper function to sample an index from a probability array
-    '''
+    
+    #helper function to sample an index from a probability array
     exp_predicted = np.exp(predicted/temperature)
     predicted = exp_predicted / np.sum(exp_predicted)
     probabilities = np.random.multinomial(1, predicted, 1)
     return probabilities
 
 def run(train_data, target_data, unique_chars, len_unique_chars):
-    '''
-     main run function
-    '''
+    
+    #main run function
     x = tf.placeholder("float", [None, max_len, len_unique_chars])
     y = tf.placeholder("float", [None, len_unique_chars])
     weight = tf.Variable(tf.random_normal([num_units, len_unique_chars]))
@@ -113,7 +107,7 @@ def run(train_data, target_data, unique_chars, len_unique_chars):
     sess.close()
 
 if __name__ == "__main__":
-    #get data from https://s3.amazonaws.com/text-datasets/nietzsche.txt
+    #initialize, read in data, and parse in parameters
     text = read_data('nietzsche.txt')
     train_data, target_data, unique_chars, len_unique_chars = featurize(text)
     run(train_data, target_data, unique_chars, len_unique_chars)
