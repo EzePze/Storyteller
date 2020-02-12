@@ -75,7 +75,7 @@ def on_epoch_end(epoch, _):
         print('----- diversity:', diversity)
 
         generated = ''
-        sentence = input("Enter an opening sentence: ").lower()
+        sentence = text[start_index: start_index + maxlen]
         generated += sentence
         print('----- Generating with seed: "' + sentence + '"')
         sys.stdout.write(generated)
@@ -85,7 +85,7 @@ def on_epoch_end(epoch, _):
             for t, char in enumerate(sentence):
                 x_pred[0, t, char_indices[char]] = 1.
 
-            preds = keras.model.predict(x_pred, verbose=0)[0]
+            preds = model.predict(x_pred, verbose=0)[0]
             next_index = sample(preds, diversity)
             next_char = indices_char[next_index]
 
