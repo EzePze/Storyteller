@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="75ace0ce-1c5a-4b8f-8e04-c40c07a48868" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/generalModel.h5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Storyteller.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Storyteller.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generator_Keras.py" beforeDir="false" afterPath="$PROJECT_DIR$/Generator_Keras.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.h5" beforeDir="false" />
-    </list>
+    <list default="true" id="75ace0ce-1c5a-4b8f-8e04-c40c07a48868" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,11 +62,6 @@
             <path>
               <item name="Storyteller" type="b2602c69:ProjectViewProjectNode" />
               <item name="Storyteller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Storyteller" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Storyteller" type="462c0819:PsiDirectoryNode" />
-              <item name="venv" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Storyteller" type="b2602c69:ProjectViewProjectNode" />
