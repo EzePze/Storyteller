@@ -12,8 +12,21 @@ print(" \_____  \    __\/  _ \_  __ \   |  |  |    |_/ __ \|  | |  | _/ __ \_  _
 print(" /        \|  | (  (_) |  | \/\___  |  |    |\  ___/|  |_|  |_\  ___/|  | \/")
 print("/_______  /|__|  \____/|__|   /_____|  |____| \___  |____/____/\___  |__|   ")
 print("        \/                    \/                  \/               \/       ")
+print("")
+print("")
+print("")
 
+model_dict = {"1": "generalModel.h5", "2" : "Nietzsche.h5"}
 
+model_select = input("""Select a model:
+
+[1] General
+[2] Nietzsche
+
+""")
+
+print("loading model %s" % (model_dict[model_select].strip(".h5")))
+model = keras.models.load_model(model_dict[model_select])
 
 def read_data(file_name):
     #open and read text file
@@ -48,8 +61,6 @@ for i, sentence in enumerate(sentences):
 
 
 # load the model: a single LSTM
-print('Load model...')
-model = keras.models.load_model('model.h5')
 
 def sample(preds, temperature=1.0):
     # helper function to sample an index from a probability array
@@ -65,7 +76,8 @@ def on_epoch_end(epoch, _):
     # Function invoked at end of each epoch. Prints generated text.
     # serialize model to JSON
 
-    model.save("model.h5")
+    print("saving model")
+    model.save(model_dict[model_select])
 
     print()
     print('----- Generating text after Epoch: %d' % epoch)
