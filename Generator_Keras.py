@@ -4,7 +4,7 @@ import keras
 import numpy as np
 import random
 import sys
-import io
+import os
 
 print("  _________ __                       ___________    .__  .__                ")
 print(" /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________ ")
@@ -16,7 +16,7 @@ print("")
 print("")
 print("")
 
-model_dict = {"1": "generalModel.h5", "2" : "Nietzsche.h5"}
+model_dict = {"1": "general", "2" : "nietzsche"}
 
 model_select = input("""Select a model:
 
@@ -25,33 +25,41 @@ model_select = input("""Select a model:
 
 """)
 
-print("loading model %s" % (model_dict[model_select].strip(".h5")))
-model = keras.models.load_model(model_dict[model_select])
+chosen_model = model_dict[model_select]
+
+train = (input("""Select a mode:
+
+[1]Train the model
+[2]Generate text with the model
+
+""") == "1")
+
 
 def read_data(file_name):
     #open and read text file
-    text = open(file_name, 'r', encoding = "utf-8").read()
+    text = open(file_name, 'r').read()
     return text.lower()
 
-text = read_data('nietzsche.txt')
-print('corpus length:', len(text))
+text = read_data(chosen_model + ".txt")
 
 chars = sorted(list(set(text)))
-print('total chars:', len(chars))
 char_indices = dict((c, i) for i, c in enumerate(chars))
 indices_char = dict((i, c) for i, c in enumerate(chars))
+
+if train:
+    print('corpus length:', len(text))
+    print('total chars:', len(chars))
 
 # cut the text in semi-redundant sequences of maxlen characters
 maxlen = 40
 step = 3
 sentences = []
 next_chars = []
+
 for i in range(0, len(text) - maxlen, step):
     sentences.append(text[i: i + maxlen])
     next_chars.append(text[i + maxlen])
-print('nb sequences:', len(sentences))
 
-print('Vectorization...')
 x = np.zeros((len(sentences), maxlen, len(chars)), dtype=np.bool)
 y = np.zeros((len(sentences), len(chars)), dtype=np.bool)
 for i, sentence in enumerate(sentences):
@@ -59,8 +67,27 @@ for i, sentence in enumerate(sentences):
         x[i, t, char_indices[char]] = 1
     y[i, char_indices[next_chars[i]]] = 1
 
+if train:
+    print('corpus length:', len(text))
+    print('total chars:', len(chars))
+    print('nb sequences:', len(sentences))
+    print('Vectorization...')
 
 # load the model: a single LSTM
+print("loading model %s" % (chosen_model))
+print("")
+print("------------------------------------------------------")
+
+if not os.path.isfile(chosen_model + "Model.h5"):
+    model = keras.Sequential()
+    model.add(keras.layers.LSTM(128, input_shape=(maxlen, len(chars))))
+    model.add(keras.layers.Dense(len(chars), activation='softmax'))
+
+    optimizer = keras.optimizers.RMSprop(learning_rate=0.01)
+    model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+
+else:
+    model = keras.models.load_model(chosen_model + "Model.h5")
 
 def sample(preds, temperature=1.0):
     # helper function to sample an index from a probability array
@@ -71,17 +98,7 @@ def sample(preds, temperature=1.0):
     probas = np.random.multinomial(1, preds, 1)
     return np.argmax(probas)
 
-
-def on_epoch_end(epoch, _):
-    # Function invoked at end of each epoch. Prints generated text.
-    # serialize model to JSON
-
-    print("saving model")
-    model.save(model_dict[model_select])
-
-    print()
-    print('----- Generating text after Epoch: %d' % epoch)
-
+def generateText():
     start_index = random.randint(0, len(text) - maxlen - 1)
     for diversity in [0.2, 0.5, 1.0, 1.2]:
         print('----- diversity:', diversity)
@@ -107,11 +124,27 @@ def on_epoch_end(epoch, _):
             sys.stdout.flush()
         print()
 
+
+def on_epoch_end(epoch, _):
+    # Function invoked at end of each epoch. Prints generated text.
+    # serialize model to JSON
+
+    print("saving model")
+    model.save(chosen_model + "Model.h5")
+
+    print()
+    print('----- Generating text after Epoch: %d' % epoch)
+
+    generateText()
+
 print_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 
-model.fit(x, y,
-          batch_size=128,
-          epochs=60,
-          callbacks=[print_callback])
+if train:
+    model.fit(x, y,
+        batch_size=128,
+        epochs=60,
+        callbacks=[print_callback])
+else:
+    generateText()
 
 
