@@ -101,12 +101,17 @@ def sample(preds, temperature=1.0):
 def generateText():
     start_index = random.randint(0, len(text) - maxlen - 1)
     for diversity in [0.2, 0.5, 1.0, 1.2]:
-        print('----- diversity:', diversity)
+        print("""
+        """)
+        print('----- Diversity:', diversity)
+        print(""" """)
 
         generated = ''
         sentence = text[start_index: start_index + maxlen]
         generated += sentence
         print('----- Generating with seed: "' + sentence + '"')
+        print("""
+        """)
         sys.stdout.write(generated)
 
         for i in range(400):
