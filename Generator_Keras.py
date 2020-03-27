@@ -5,6 +5,7 @@ import numpy as np
 import random
 import sys
 import os
+import hashlib
 
 print("  _________ __                       ___________    .__  .__                ")
 print(" /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________ ")
@@ -15,6 +16,33 @@ print("        \/                    \/                  \/               \/    
 print("")
 print("")
 print("")
+
+def read_data(file_name):
+    #open and read text file
+    text = open(file_name, 'r').read()
+    return text.lower()
+
+
+credentials = read_data("login.txt")
+rows = credentials.split("\n")
+login = False
+
+while not login:
+    i = 0
+    user = input("Username: ").lower()
+    password = input("Password: ").lower()
+
+    while not login and i < len(rows) - 1:
+
+        compare = rows[i].split(', ')
+        if user == compare[0] and hashlib.sha256(str.encode(password)).hexdigest() == compare[1]:
+            login = True
+        i += 1
+
+    if not login:
+        print("Invalid login. Try again.\n")
+
+print("Login successful. Welcome, %s.\n" %user)
 
 model_dict = {"1": "general", "2" : "nietzsche"}
 
@@ -34,11 +62,6 @@ train = (input("""Select a mode:
 
 """) == "1")
 
-
-def read_data(file_name):
-    #open and read text file
-    text = open(file_name, 'r').read()
-    return text.lower()
 
 text = read_data(chosen_model + ".txt")
 
