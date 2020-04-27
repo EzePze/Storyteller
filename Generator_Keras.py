@@ -69,10 +69,6 @@ chars = sorted(list(set(text)))
 char_indices = dict((c, i) for i, c in enumerate(chars))
 indices_char = dict((i, c) for i, c in enumerate(chars))
 
-if train:
-    print('corpus length:', len(text))
-    print('total chars:', len(chars))
-
 # cut the text in semi-redundant sequences of maxlen characters
 maxlen = 40
 step = 3
@@ -91,9 +87,9 @@ for i, sentence in enumerate(sentences):
     y[i, char_indices[next_chars[i]]] = 1
 
 if train:
-    print('corpus length:', len(text))
-    print('total chars:', len(chars))
-    print('nb sequences:', len(sentences))
+    print('Training data length:', len(text))
+    print('Total unique characters:', len(chars))
+    print('')
     print('Vectorization...')
 
 # load the model: a single LSTM
@@ -155,7 +151,6 @@ def generateText():
 
 def on_epoch_end(epoch, _):
     # Function invoked at end of each epoch. Prints generated text.
-    # serialize model to JSON
 
     print("saving model")
     model.save(chosen_model + "Model.h5")

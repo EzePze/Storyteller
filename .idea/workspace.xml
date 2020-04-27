@@ -4,6 +4,7 @@
     <list default="true" id="75ace0ce-1c5a-4b8f-8e04-c40c07a48868" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generator_Keras.py" beforeDir="false" afterPath="$PROJECT_DIR$/Generator_Keras.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/general.txt" beforeDir="false" afterPath="$PROJECT_DIR$/general.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,8 +17,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Generator_Keras.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-20">
-              <caret line="44" column="36" selection-start-line="44" selection-start-column="36" selection-end-line="44" selection-end-column="36" />
+            <state relative-caret-position="223">
+              <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -40,8 +41,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/general.txt">
           <provider selected="true" editor-type-id="LargeFileEditor">
-            <state relative-caret-position="150">
-              <caret line="10" selection-start-line="10" selection-end-line="10" />
+            <state relative-caret-position="165840">
+              <caret line="11056" column="43" selection-start-line="11056" selection-start-column="43" selection-end-line="11056" selection-end-column="43" />
             </state>
           </provider>
         </entry>
@@ -67,9 +68,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="1729" />
-    <option name="y" value="-50" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="13" />
+    <option name="y" value="45" />
     <option name="width" value="1440" />
     <option name="height" value="900" />
   </component>
@@ -78,7 +79,17 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Storyteller" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Storyteller" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="Scope" />
     </panes>
   </component>
@@ -148,22 +159,22 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1729" y="-50" width="1440" height="900" extended-state="0" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13742071" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26638478" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3279703" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49921012" weight="0.9628713" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3990099" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49921012" visible="true" weight="0.25371286" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39851484" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49964765" weight="0.32772276" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5007899" side_tool="true" weight="0.3970297" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32920793" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49964765" weight="0.32673267" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5007899" side_tool="true" weight="0.39562625" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.32970297" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -206,8 +217,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Generator_Keras.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-20">
-          <caret line="44" column="36" selection-start-line="44" selection-start-column="36" selection-end-line="44" selection-end-column="36" />
+        <state relative-caret-position="223">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
@@ -226,8 +237,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/general.txt">
       <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="150">
-          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        <state relative-caret-position="165840">
+          <caret line="11056" column="43" selection-start-line="11056" selection-start-column="43" selection-end-line="11056" selection-end-column="43" />
         </state>
       </provider>
     </entry>
