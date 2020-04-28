@@ -19,7 +19,7 @@ print("")
 
 def read_data(file_name):
     #open and read text file
-    text = open(file_name, 'r').read()
+    text = open(file_name, 'r', encoding='utf-8').read()
     return text.lower()
 
 
@@ -71,7 +71,12 @@ indices_char = dict((i, c) for i, c in enumerate(chars))
 
 # cut the text in semi-redundant sequences of maxlen characters
 maxlen = 40
-step = 3
+
+if chosen_model == 'general':
+    step = 30
+elif chosen_model == 'nietzsche':
+    step = 3
+
 sentences = []
 next_chars = []
 
