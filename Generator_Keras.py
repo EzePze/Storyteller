@@ -72,26 +72,27 @@ indices_char = dict((i, c) for i, c in enumerate(chars))
 # cut the text in semi-redundant sequences of maxlen characters
 maxlen = 40
 
-if chosen_model == 'general':
-    step = 30
-elif chosen_model == 'nietzsche':
-    step = 3
-
-sentences = []
-next_chars = []
-
-for i in range(0, len(text) - maxlen, step):
-    sentences.append(text[i: i + maxlen])
-    next_chars.append(text[i + maxlen])
-
-x = np.zeros((len(sentences), maxlen, len(chars)), dtype=np.bool)
-y = np.zeros((len(sentences), len(chars)), dtype=np.bool)
-for i, sentence in enumerate(sentences):
-    for t, char in enumerate(sentence):
-        x[i, t, char_indices[char]] = 1
-    y[i, char_indices[next_chars[i]]] = 1
-
 if train:
+    if chosen_model == 'general':
+        step = 30
+    elif chosen_model == 'nietzsche':
+        step = 3
+
+    sentences = []
+    next_chars = []
+
+    for i in range(0, len(text) - maxlen, step):
+        sentences.append(text[i: i + maxlen])
+        next_chars.append(text[i + maxlen])
+
+    x = np.zeros((len(sentences), maxlen, len(chars)), dtype=np.bool)
+    y = np.zeros((len(sentences), len(chars)), dtype=np.bool)
+    for i, sentence in enumerate(sentences):
+        for t, char in enumerate(sentence):
+            x[i, t, char_indices[char]] = 1
+        y[i, char_indices[next_chars[i]]] = 1
+
+
     print('Training data length:', len(text))
     print('Total unique characters:', len(chars))
     print('')
