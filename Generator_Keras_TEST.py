@@ -188,7 +188,7 @@ def on_epoch_end(epoch, _):
 print_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 
 if train:
-    model.fit(x, y,
+    model.fit(X_modified, Y_modified,
         batch_size=50,
         epochs=100,
         callbacks=[print_callback])
