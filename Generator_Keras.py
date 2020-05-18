@@ -7,6 +7,8 @@ import sys
 import os
 import hashlib
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+
 print("  _________ __                       ___________    .__  .__                ")
 print(" /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________ ")
 print(" \_____  \    __\/  _ \_  __ \   |  |  |    |_/ __ \|  | |  | _/ __ \_  __ \ ")
@@ -125,6 +127,9 @@ def sample(preds, temperature=1.0):
 
 def generateText():
     start_index = random.randint(0, len(text) - maxlen - 1)
+    sentence = input('\nEnter an opening sentence: ').lower() if input('''[1] Enter custom input
+[2] Use sentence from training data\n\n''') == '1' else text[start_index: start_index + maxlen]
+    print('----- Generating with seed: "' + sentence + '"')
     for diversity in [0.2, 0.5, 1.0, 1.2]:
         print("""
         """)
@@ -132,12 +137,9 @@ def generateText():
         print(""" """)
 
         generated = ''
-        sentence = input('Enter an opening sentence: ') if input('''[1] Enter custom input
-        [2] Use sentence from training data''') == '1' else text[start_index: start_index + maxlen]
-        generated += sentence
-        print('----- Generating with seed: "' + sentence + '"')
         print("""
         """)
+        generated += sentence
         sys.stdout.write(generated)
 
         for i in range(400):
