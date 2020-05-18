@@ -132,7 +132,8 @@ def generateText():
         print(""" """)
 
         generated = ''
-        sentence = text[start_index: start_index + maxlen]
+        sentence = input('Enter an opening sentence: ') if input('''[1] Enter custom input
+        [2] Use sentence from training data''') == '1' else text[start_index: start_index + maxlen]
         generated += sentence
         print('----- Generating with seed: "' + sentence + '"')
         print("""
