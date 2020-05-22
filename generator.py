@@ -10,6 +10,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 def interact_model(
+    custom,
+    raw_text,
     model_name='124M',
     seed=None,
     nsamples=1,
@@ -19,7 +21,6 @@ def interact_model(
     top_k=0,
     top_p=1,
     models_dir='models',
-    raw_text = ''
 ):
     """
     Interactively run the model
@@ -71,11 +72,13 @@ def interact_model(
         ckpt = tf.train.latest_checkpoint(os.path.join(models_dir, model_name))
         saver.restore(sess, ckpt)
 
-        
-        raw_text = input("Model prompt >>> ")
-        while not raw_text:
-            print('Prompt should not be empty!')
-            raw_text = input("Model prompt >>> ")
+        if custom:
+            custom_text = input("Model prompt >>> ")
+            while not custom_text:
+                print('Prompt should not be empty!')
+                custom_text = input("Model prompt >>> ")
+            raw_text += ' ' + custom_text
+        print(raw_text)
         context_tokens = enc.encode(raw_text)
         generated = 0
         for _ in range(nsamples // batch_size):
