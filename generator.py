@@ -78,7 +78,6 @@ def interact_model(
                 print('Prompt should not be empty!')
                 custom_text = input("Model prompt >>> ")
             raw_text += ' ' + custom_text
-        print(raw_text)
         context_tokens = enc.encode(raw_text)
         generated = 0
         for _ in range(nsamples // batch_size):
