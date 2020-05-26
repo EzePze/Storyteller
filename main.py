@@ -20,7 +20,71 @@ import re
 import fire
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
-def main():
+def main(
+    username='',
+    password='',
+    model_name='',
+    ):
+    """
+    AI Text Generation
+
+    StoryTeller is an AI driven story generation software powered, in part, by OpenAI's gpt-2 model -- an unsupervised learning model that comes in four different versions with varying amounts of paramaters, all of which are included in this package: 
+    
+      - 124M
+      - 355M
+      - 774M
+      - 1558M
+      
+    The names of these models represent how many parameters they have; essentially, the higher the number, the more complex the model.
+
+
+    """
+    class User:
+        def __init__(self, username, password):
+            self.username = username
+            self.password = password
+            self.modelList = '%sModels.txt' % self.username
+            #with open(self.modelList, 'w') as defaultList:
+            #    defaultList.write('general\nnietzsche\nshakespeare')
+
+        def add_new_user(self):
+            with open('users.txt', 'a') as users:
+                users.write('%s, %s' %(self.username, hashlib.sha256(str.encode(self.password)).hexdigest()))
+            with open(self.modelList, 'w') as defaultList:
+                defaultList.write('general\nnietzsche\nshakespeare')            
+
+        def update_dict(self):
+            data = read_data(self.modelList).lower()
+            return dict((i,c) for i,c in enumerate(data.split(), 2))
+
+        def create_model(self, name='', data=''):
+            if not name:
+                name = input('\nEnter the name for your new model: ').lower()
+            if not data:
+                data = input('\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
+            while not os.path.isfile(data):
+                print('\nInvalid file. Are you sure the file \'%s\' is in the /Storyteller folder?\n' % data)
+                data = input('\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
+            model_dict = update_dict()
+            with open(self.modelList, 'a') as modelList:
+                modelList.write(name + '\n')
+            with open('%s.txt' % name, 'w') as newData:
+                newData.write(read_data(data))
+            print('\nCreated model \'%s\'\n' % name)
+
+        def delete_model(name):
+            oldList = read_data('ListOfModels.txt').lower()
+            oldList = oldList.replace(name,'')
+            with open('ListOfModels.txt', 'w') as newList:
+                newList.write(oldList)
+            if os.path.isfile(name + "Model.h5"):
+                os.remove('%sModel.h5' % name)
+            if os.path.isfile(name + ".txt"):
+                os.remove('%s.txt' % name)
+            print('Deleted model \'%s\'\n' % name)
+
+
+
     def model_config_driver():
         try:
             printing('Attempting to create model named "shakespearecopy" with data "shakespeare.txt"...')
@@ -30,66 +94,23 @@ def main():
             print('Test1 Passed.')
         except:
             print('Test1 Failed.')
-        try:
-            printing('')
+        #try:
+            #printing('')
 
     def read_data(file_name):
         #open and read text file
         text = open(file_name, encoding='utf-8').read()
         return text
 
-    def on_epoch_end(epoch, _):
-        # Function invoked at end of each epoch. Prints generated text.
-
-        print("saving model")
-        model.save(chosen_model + "Model.h5")
-
-        print()
-        #print('----- Generating text after Epoch: %d' % epoch)
-
-        #generateText()
-
+    
     def get_model_selection():
         print("Select a model or create a new one:\n\n[0] New Model\n[1] Delete Model")
         for i in model_dict:
             print('[%d] %s' % (i, model_dict[i].title()))
-
         print()
         model_select = int(input())
         print()
         return model_select
-
-    def update_dict(list = 'ListOfModels.txt'):
-        data = read_data(list).lower()
-        return dict((i,c) for i,c in enumerate(data.split(), 2))
-
-    def create_model(name='', data=''):
-        if not name:
-            name = input('\nEnter the name for your new model: ').lower()
-        if not data:
-            data = input('\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
-        while not os.path.isfile(data):
-            print('\nInvalid file. Are you sure the file \'%s\' is in the /Storyteller folder?\n' % data)
-            data = input('\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
-        create_model(name, data)
-        model_dict = update_dict()
-        with open('ListOfModels.txt', 'a') as modelList:
-            modelList.write(name + '\n')
-        with open('%s.txt' % name, 'w') as newData:
-            newData.write(read_data(data))
-        print('\nCreated model \'%s\'\n' % name)
-
-    def delete_model(name):
-        oldList = read_data('ListOfModels.txt').lower()
-        oldList = oldList.replace(name,'')
-        with open('ListOfModels.txt', 'w') as newList:
-            newList.write(oldList)
-        if os.path.isfile(name + "Model.h5"):
-            os.remove('%sModel.h5' % name)
-        if os.path.isfile(name + ".txt"):
-            os.remove('%s.txt' % name)
-        print('Deleted model \'%s\'\n' % name)
-
 
     print("  _________ __                       ___________    .__  .__                ")
     print(" /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________ ")
@@ -101,28 +122,41 @@ def main():
     print("")
     print("")
 
-    #credentials = read_data("login.txt")
-    #rows = credentials.split("\n")
-    #login = False
+    login = input('Welcome To StoryTeller.\n\nDo you wish to log in, or register an new user?\n\n[L]ogin\n[R]egister\n\n').upper()
 
-    #while not login:
-    #    i = 0
-    #   user = input("Username: ").lower()
-    #  password = input("Password: ").lower()
+    auth = False
+    while not auth:
+        while login not in 'LR':
+            print('Invalid option. Choose either "L" to login or "R" to register a new user\n\n')
+            login = input('Welcome To StoryTeller.\n\nDo you wish to log in, or register an new user?\n\n[L]ogin\n[R]egister\n\n').upper()
+        if login == 'L':
+            credentials = read_data("login.txt")
+            rows = credentials.split("\n")
+            i = 0
+            username = input("Username: ").lower()
+            password = input("Password: ").lower()
 
-    # while not login and i < len(rows) - 1:
+            while not auth and i < len(rows) - 1:
+                compare = rows[i].split(', ')
+                if username == compare[0] and hashlib.sha256(str.encode(password)).hexdigest() == compare[1]:
+                    auth = True
+                i += 1
 
-        #    compare = rows[i].split(', ')
-        #   if user == compare[0] and hashlib.sha256(str.encode(password)).hexdigest() == compare[1]:
-        #      login = True
-        # i += 1
+            if not auth:
+                print("Invalid login. Try again.\n")
+                login = input('Welcome To StoryTeller.\n\nDo you wish to log in, or register a new user?\n\n[L]ogin\n[R]egister\n\n').upper() == 'L'
+            else:
+                user = User(username,password)
+        else:
+            user = User(input('Enter a username: '),input('\nEnter a password: '))
+            user.add_new_user()
+            auth = True
 
-        #if not login:
-        #   print("Invalid login. Try again.\n")
 
-    #print("Login successful. Welcome, %s.\n" %user)
+    print("Login successful. Welcome, %s.\n" %user.username)
+
     while True:
-        model_dict = update_dict()
+        model_dict = user.update_dict()
         model_select = get_model_selection()
 
         while model_select not in range(2, len(model_dict) + 2):
@@ -152,7 +186,7 @@ def main():
 
         chosen_model = model_dict[model_select]
 
-        custom = (input('Select a mode:\n\n[0] Use custom prompt\n[1] Use prompt from the model text file\n\n') == "0")
+        custom = (input('Select a mode:\n\n[C]ustom prompt\n[T]ext file prompt\n\n').upper() == "C")
 
         
         text = read_data(chosen_model + ".txt")
@@ -182,4 +216,4 @@ def main():
         generator.interact_model(custom, raw_text, model_name=complexity)
 
 if __name__ == '__main__':
-    fire.Fire(main())
+    fire.Fire(main)
