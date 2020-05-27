@@ -18,6 +18,7 @@ import hashlib
 import generator
 import re
 import fire
+import getpass
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 def main(
@@ -44,17 +45,19 @@ def main(
             self.username = username
             self.password = password
             self.modelList = '%sModels.txt' % self.username
+            self.path = '%s/Users/%s/' % (os.getcwd(),self.username)
             #with open(self.modelList, 'w') as defaultList:
             #    defaultList.write('general\nnietzsche\nshakespeare')
 
         def add_new_user(self):
             with open('users.txt', 'a') as users:
-                users.write('%s, %s' %(self.username, hashlib.sha256(str.encode(self.password)).hexdigest()))
-            with open(self.modelList, 'w') as defaultList:
-                defaultList.write('general\nnietzsche\nshakespeare')            
+                users.write('%s, %s\n' %(self.username, hashlib.sha256(str.encode(self.password)).hexdigest()))
+            os.makedirs(self.path)
+            with open(os.path.join(self.path + self.modelList), 'w') as defaultList:
+                defaultList.write('general\nnietzsche\nshakespeare')
 
         def update_dict(self):
-            data = read_data(self.modelList).lower()
+            data = read_data(os.path.join(self.path + self.modelList)).lower()
             return dict((i,c) for i,c in enumerate(data.split(), 2))
 
         def create_model(self, name='', data=''):
@@ -102,7 +105,6 @@ def main(
         text = open(file_name, encoding='utf-8').read()
         return text
 
-    
     def get_model_selection():
         print("Select a model or create a new one:\n\n[0] New Model\n[1] Delete Model")
         for i in model_dict:
@@ -111,6 +113,9 @@ def main(
         model_select = int(input())
         print()
         return model_select
+
+    def get_login():
+        return input('Welcome To StoryTeller.\n\nDo you wish to log in, or register an new user?\n\n[L]ogin\n[R]egister\n\n').upper()
 
     print("  _________ __                       ___________    .__  .__                ")
     print(" /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________ ")
@@ -122,19 +127,19 @@ def main(
     print("")
     print("")
 
-    login = input('Welcome To StoryTeller.\n\nDo you wish to log in, or register an new user?\n\n[L]ogin\n[R]egister\n\n').upper()
+    login = get_login()
 
     auth = False
     while not auth:
         while login not in 'LR':
             print('Invalid option. Choose either "L" to login or "R" to register a new user\n\n')
-            login = input('Welcome To StoryTeller.\n\nDo you wish to log in, or register an new user?\n\n[L]ogin\n[R]egister\n\n').upper()
+            login = get_login()
         if login == 'L':
-            credentials = read_data("login.txt")
+            credentials = read_data("users.txt")
             rows = credentials.split("\n")
             i = 0
             username = input("Username: ").lower()
-            password = input("Password: ").lower()
+            password = getpass.getpass("Password: ").lower()
 
             while not auth and i < len(rows) - 1:
                 compare = rows[i].split(', ')
@@ -144,13 +149,20 @@ def main(
 
             if not auth:
                 print("Invalid login. Try again.\n")
-                login = input('Welcome To StoryTeller.\n\nDo you wish to log in, or register a new user?\n\n[L]ogin\n[R]egister\n\n').upper() == 'L'
+                login = get_login()
+
             else:
                 user = User(username,password)
         else:
-            user = User(input('Enter a username: '),input('\nEnter a password: '))
-            user.add_new_user()
-            auth = True
+            username = input('Enter a username: ')
+            password = getpass.getpass('\nEnter a password: ')
+            if username in read_data('users.txt'):
+                print('Username "%s" already exists!' % username)
+                login = get_login()
+            else:
+                user = User(username, password)
+                user.add_new_user()
+                auth = True
 
 
     print("Login successful. Welcome, %s.\n" %user.username)
@@ -198,20 +210,6 @@ def main(
         complex_dict = {'0':'124M', '1':'355M', '2':'774M', '3':'1558M'}
 
         complexity = complex_dict[input('\nChoose the level of complexity for the model:\n\n[0] Speed [----------] Quality [--        ]\n[1] Speed [-------   ] Quality [----      ]\n[2] Speed [----      ] Quality [-------   ]\n[3] Speed [--        ] Quality [----------]\n\n')]
-
-        # load the model: a single LSTM
-        print("loading model %s" % (chosen_model))
-        print("")
-        print("------------------------------------------------------")
-
-        #print(raw_text)
-
-        #if not os.path.isfile(chosen_model + "Model.h5"):
-            #model = keras.Sequential()
-            #model.add(keras.layers.LSTM(128, input_shape=(maxlen, len(chars))))
-            #model.add(keras.layers.Dense(len(chars), activation='softmax'))
-
-            #model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
         generator.interact_model(custom, raw_text, model_name=complexity)
 

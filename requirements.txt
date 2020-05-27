@@ -1,7 +1,7 @@
-tensorflow==1.15.0
-numpy==1.18.1
-regex==2017.4.5
 requests==2.21.0
-Keras==2.3.1
-fire==0.3.1
 tqdm==4.31.1
+regex==2017.4.5
+numpy==1.18.1
+fire==0.3.1
+tensorflow==1.15.0
+Keras==2.3.1
