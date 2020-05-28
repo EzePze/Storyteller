@@ -42,6 +42,9 @@ def interact_model(
      :models_dir : path to parent folder containing model subfolders
      (i.e. contains the <model_name> folder)
     """
+    if not custom:
+        print('Generating text with prompt:\n\n "%s"\n\n\n' % (raw_text))
+
     models_dir = os.path.expanduser(os.path.expandvars(models_dir))
     if batch_size is None:
         batch_size = 1
@@ -78,6 +81,7 @@ def interact_model(
                 print('Prompt should not be empty!')
                 custom_text = input("Model prompt >>> ")
             raw_text += ' ' + custom_text
+            print('Generating text with prompt:\n\n "%s"\n\n\n' % (custom_text))
         context_tokens = enc.encode(raw_text)
         generated = 0
         for _ in range(nsamples // batch_size):
@@ -87,7 +91,7 @@ def interact_model(
             for i in range(batch_size):
                 generated += 1
                 text = enc.decode(out[i])
-                print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
+                print("=" * 80)
                 print(text)
         print("=" * 80)
 

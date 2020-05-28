@@ -19,15 +19,12 @@ import generator
 import re
 import fire
 import getpass
+import download_models
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
-def main(
-    username='',
-    password='',
-    model_name='',
-    ):
+def main():
     """
-    AI Text Generation
+    STORYTELLER
 
     StoryTeller is an AI driven story generation software powered, in part, by OpenAI's gpt-2 model -- an unsupervised learning model that comes in four different versions with varying amounts of paramaters, all of which are included in this package: 
     
@@ -44,8 +41,8 @@ def main(
         def __init__(self, username, password):
             self.username = username
             self.password = password
-            self.modelList = '%sModels.txt' % self.username
             self.path = '%s/Users/%s/' % (os.getcwd(),self.username)
+            self.modelList = self.path + '%sModels.txt' % self.username
             #with open(self.modelList, 'w') as defaultList:
             #    defaultList.write('general\nnietzsche\nshakespeare')
 
@@ -53,52 +50,87 @@ def main(
             with open('users.txt', 'a') as users:
                 users.write('%s, %s\n' %(self.username, hashlib.sha256(str.encode(self.password)).hexdigest()))
             os.makedirs(self.path)
-            with open(os.path.join(self.path + self.modelList), 'w') as defaultList:
-                defaultList.write('general\nnietzsche\nshakespeare')
+            with open(os.path.join(self.modelList), 'w') as defaultList:
+                defaultList.write('general\nnietzsche\nshakespeare\n')
 
         def update_dict(self):
-            data = read_data(os.path.join(self.path + self.modelList)).lower()
+            data = read_data(os.path.join(self.modelList))
             return dict((i,c) for i,c in enumerate(data.split(), 2))
 
-        def create_model(self, name='', data=''):
+        def create_model(self, name='', data='', test=False):
             if not name:
                 name = input('\nEnter the name for your new model: ').lower()
             if not data:
                 data = input('\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
+
             while not os.path.isfile(data):
+                if test:
+                    return True
                 print('\nInvalid file. Are you sure the file \'%s\' is in the /Storyteller folder?\n' % data)
                 data = input('\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
-            model_dict = update_dict()
-            with open(self.modelList, 'a') as modelList:
+
+            if name in read_data(os.path.join(self.modelList)):
+                if test:
+                    return True
+                print('That model already exists!')
+                return
+            with open(os.path.join(self.modelList), 'a') as modelList:
                 modelList.write(name + '\n')
             with open('%s.txt' % name, 'w') as newData:
                 newData.write(read_data(data))
+
             print('\nCreated model \'%s\'\n' % name)
 
-        def delete_model(name):
-            oldList = read_data('ListOfModels.txt').lower()
+        def delete_model(self, name):
+            oldList = read_data(os.path.join(self.modelList)).lower()
             oldList = oldList.replace(name,'')
-            with open('ListOfModels.txt', 'w') as newList:
+            with open(os.path.join(self.modelList), 'w') as newList:
                 newList.write(oldList)
-            if os.path.isfile(name + "Model.h5"):
-                os.remove('%sModel.h5' % name)
             if os.path.isfile(name + ".txt"):
                 os.remove('%s.txt' % name)
             print('Deleted model \'%s\'\n' % name)
 
 
 
-    def model_config_driver():
+    def model_config_driver(user):
+        print('---------------------------\nBEGIN DRIVER\n---------------------------\n')
+        print('Attempting to create model named "shakespearecopy" with data "shakespeare.txt"...')
         try:
-            printing('Attempting to create model named "shakespearecopy" with data "shakespeare.txt"...')
-            create_model('shakespearecopy', 'shakespeare.txt')
-            assert os.path.isfile('shakespearecopy.txt')
-            assert read_data('shakespearecopy.txt') == read_data('shakespeare.txt')
-            print('Test1 Passed.')
+            user.create_model('shakespearecopy', 'shakespeare.txt')
         except:
+            e = sys.exc_info()[0]
+            print('An error occurred: %s' %e)
+        if os.path.isfile('shakespearecopy.txt') and read_data('shakespearecopy.txt') == read_data('shakespeare.txt'):
+            print('Test1 Passed.')
+        else:
             print('Test1 Failed.')
-        #try:
-            #printing('')
+        
+        print('\nAttempting to create model named "tharihtosrah" with data "lizard"')
+        try:
+            test = user.create_model('tharihtosrah', 'lizard', test=True)
+        except:
+            e = sys.exc_info()[0]
+            print('An error occurred: %s' %e)
+        if test:
+            print('Test2 Passed.')
+        else:
+            print('Test2 Failed.')
+
+        print('\nAttempting to create multiple models with the same name...\n')
+        try:
+            test = user.create_model('shakespeare', 'shakespeare.txt', test=True)
+        except:
+            e = sys.exc_info()[0]
+            print('\nAn error occurred: %s\n' %e)
+        if test:
+            print('Test3 Passed.')
+        else:
+            print('Test3 Failed.')      
+
+        print('\nDeleting test models...\n')  
+        user.delete_model('shakespearecopy')
+        print('---------------------------\nEND DRIVER\n---------------------------\n')
+        
 
     def read_data(file_name):
         #open and read text file
@@ -115,7 +147,7 @@ def main(
         return model_select
 
     def get_login():
-        return input('Welcome To StoryTeller.\n\nDo you wish to log in, or register an new user?\n\n[L]ogin\n[R]egister\n\n').upper()
+        return input('Welcome To StoryTeller.\n\nDo you wish to log in, or register a new user?\n\n[L]ogin\n[R]egister\n\n').upper()
 
     print("  _________ __                       ___________    .__  .__                ")
     print(" /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________ ")
@@ -127,6 +159,14 @@ def main(
     print("")
     print("")
 
+    if not os.path.isdir('models'):
+        if input('It seems that you do not have the required models downloaded. These are required to generate text, and are, in total, approximately 10GB in size. Would you like to install them now? (y/n)\n\n').lower() == 'y':
+            print('---------------------------\nBEGIN INITIALISATION\n---------------------------\n')
+            download_models.download()
+            print('---------------------------\nEND INITIALISATION\n---------------------------\n')
+        else:
+            print('\n\nExiting...')
+            sys.exit()
     login = get_login()
 
     auth = False
@@ -164,8 +204,10 @@ def main(
                 user.add_new_user()
                 auth = True
 
-
     print("Login successful. Welcome, %s.\n" %user.username)
+
+    #user.create_model()
+    model_config_driver(user)
 
     while True:
         model_dict = user.update_dict()
@@ -173,7 +215,8 @@ def main(
 
         while model_select not in range(2, len(model_dict) + 2):
             if not model_select:
-                create_model(name='',data='')
+                user.create_model(name='',data='')
+                model_dict = user.update_dict()
                 model_select = get_model_selection()
 
             elif model_select == 1:
@@ -184,8 +227,9 @@ def main(
                 name = int(input())
                 if input('Are you sure you wish to delete model \'%s\'? (y/n)\n\n' % model_dict[name + 2]) == 'y':
                     print()
-                    delete_model(model_dict[name + 2])
-                    model_dict = update_dict()
+                    print(model_dict)
+                    user.delete_model(model_dict[name + 2])
+                    model_dict = user.update_dict()
                     print('\nReturning to model selection screen...\n\n')
                 else:
                     print('Cancelling...\n\nReturning to model selection...\n')
