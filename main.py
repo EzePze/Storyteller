@@ -74,8 +74,10 @@ def main():
                     return True
                 print('That model already exists!')
                 return
+
             with open(os.path.join(self.modelList), 'a') as modelList:
                 modelList.write(name + '\n')
+                
             with open('%s.txt' % name, 'w') as newData:
                 newData.write(read_data(data))
 
@@ -89,6 +91,7 @@ def main():
             if os.path.isfile(name + ".txt"):
                 os.remove('%s.txt' % name)
             print('Deleted model \'%s\'\n' % name)
+            model_dict = user.update_dict()
 
 
 
@@ -149,6 +152,7 @@ def main():
     def get_login():
         return input('Welcome To StoryTeller.\n\nDo you wish to log in, or register a new user?\n\n[L]ogin\n[R]egister\n\n').upper()
 
+    
     print("  _________ __                       ___________    .__  .__                ")
     print(" /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________ ")
     print(" \_____  \    __\/  _ \_  __ \   |  |  |    |_/ __ \|  | |  | _/ __ \_  __ \ ")
@@ -227,9 +231,8 @@ def main():
                 name = int(input())
                 if input('Are you sure you wish to delete model \'%s\'? (y/n)\n\n' % model_dict[name + 2]) == 'y':
                     print()
-                    print(model_dict)
                     user.delete_model(model_dict[name + 2])
-                    model_dict = user.update_dict()
+                    #model_dict = user.update_dict()
                     print('\nReturning to model selection screen...\n\n')
                 else:
                     print('Cancelling...\n\nReturning to model selection...\n')
@@ -239,11 +242,9 @@ def main():
                 print('Please choose a number in the provided range\n')
                 model_select = get_model_selection()
 
-
         chosen_model = model_dict[model_select]
 
         custom = (input('Select a mode:\n\n[C]ustom prompt\n[T]ext file prompt\n\n').upper() == "C")
-
         
         text = read_data(chosen_model + ".txt")
         length = len(text)
@@ -258,4 +259,7 @@ def main():
         generator.interact_model(custom, raw_text, model_name=complexity)
 
 if __name__ == '__main__':
-    fire.Fire(main)
+    try:
+        fire.Fire(main)
+    except KeyboardInterrupt:
+        print('\n' +'=' * 80 + '\n\nQUITTING\n\n' + '=' * 80 + '\n')
