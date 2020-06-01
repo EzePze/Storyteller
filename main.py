@@ -77,7 +77,7 @@ def main():
 
             with open(os.path.join(self.modelList), 'a') as modelList:
                 modelList.write(name + '\n')
-                
+
             with open('%s.txt' % name, 'w') as newData:
                 newData.write(read_data(data))
 
@@ -92,7 +92,6 @@ def main():
                 os.remove('%s.txt' % name)
             print('Deleted model \'%s\'\n' % name)
             model_dict = user.update_dict()
-
 
 
     def model_config_driver(user):
