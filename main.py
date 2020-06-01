@@ -1,4 +1,17 @@
 from __future__ import print_function
+import os
+import sys
+stderr = sys.stderr
+sys.stderr = open(os.devnull, 'w')
+from keras.callbacks import LambdaCallback
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import Dropout
+from keras.layers import LSTM
+from keras.layers import RNN
+from keras.utils import np_utils
+import keras
+sys.stderr = stderr
 import download_models
 import getpass
 import fire
@@ -7,21 +20,7 @@ import generator
 import hashlib
 import random
 import numpy as np
-import keras
-from keras.utils import np_utils
-from keras.layers import RNN
-from keras.layers import LSTM
-from keras.layers import Dropout
-from keras.layers import Dense
-from keras.models import Sequential
-from keras.callbacks import LambdaCallback
-import sys
-import os
-stderr = sys.stderr
-sys.stderr = open(os.devnull, 'w')
-sys.stderr = stderr
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 
 def main():
     """
@@ -219,12 +218,16 @@ def main():
                     auth = True
                 i += 1
 
+            # Provides the user with infinite oppurtunities to either login or register successfully
             if not auth:
                 print("Invalid login. Try again.\n")
                 login = get_login()
 
+            # Create an instance of the 'User' class for a user that already exists
             else:
                 user = User(username, password)
+
+        # If the user wishes to register, create an instance of the 'User' class and initialise a directory within the 'Users' folder that contains a new modelList with the default models already written
         else:
             username = input('Enter a username: ')
             password = getpass.getpass('\nEnter a password: ')
@@ -236,19 +239,25 @@ def main():
                 user.add_new_user()
                 auth = True
 
+    # Once the user breaks the while loop, they have successfully logged in
     print("Login successful. Welcome, %s.\n" % user.username)
 
-    # user.create_model()
     model_config_driver(user)
 
+    # Repeat indefinitely, until the user decides to quit
     while True:
         model_dict = user.update_dict()
         model_select = get_model_selection()
 
+        # If the model_select is not between 2 and the length of the model_dict, it must be either 'New Model' (0) or 'Delete Model' (1)
         while model_select not in range(2, len(model_dict) + 2):
+
+            # Equivalent to saying "If model_select == 0"
             if not model_select:
                 user.create_model(name='', data='')
                 model_dict = user.update_dict()
+
+                # After the user has created a new model, prompt them for their model selection again
                 model_select = get_model_selection()
 
             elif model_select == 1:
@@ -266,31 +275,42 @@ def main():
                     print('Cancelling...\n\nReturning to model selection...\n')
                 model_select = get_model_selection()
 
+            # Account for if the user inputs a number outside the range, or an invalid data type
             else:
                 print('Please choose a number in the provided range\n')
                 model_select = get_model_selection()
 
+        # After the user breaks the while loop, they must have chosen a model within the desired range, so their chosen model can be assigned, according to their personal model_dict
         chosen_model = model_dict[model_select]
 
+        # Prompt the user to choose between a custom input and a text file input
         custom = (input(
             'Select a mode:\n\n[C]ustom prompt\n[T]ext file prompt\n\n').upper() == "C")
 
+        # Split the text file into words, and then construct a base prompt consisting of 200 words
         text = read_data(chosen_model + ".txt")
         length = len(text)
         words = text.split()
         start_index = random.randint(0, len(words) - 1)
         raw_text = ' '.join(words[start_index: start_index + 200])
 
+        # Similar to model_dict; allows the user to choose between differing levels of complexity efficiently
         complex_dict = {'0': '124M', '1': '355M', '2': '774M', '3': '1558M'}
 
+        # Get complexity choice from user, and display the different complexities visually
         complexity = complex_dict[input(
             '\nChoose the level of complexity for the model:\n\n[0] Speed [----------] Quality [--        ]\n[1] Speed [-------   ] Quality [----      ]\n[2] Speed [----      ] Quality [-------   ]\n[3] Speed [--        ] Quality [----------]\n\n')]
 
+        # Using the 'generator.py' module, generate text using the parameters decided by the user
         generator.interact_model(custom, raw_text, model_name=complexity)
 
 
+# If the 'main.py' program is the program being currently run, perform the following actions. This allows the entirety of 'Storyteller' to be used as an open source library for other developers -- they can simply use the 'main' function and have 'main.py' act as a library instead of a standalone program
 if __name__ == '__main__':
     try:
+        # 'fire' allows command line operations for python programs; it is what allows the '--help' function to work
         fire.Fire(main)
+
+    # Keep running the 'while True' loop in 'main' until the user interrupts with Ctrl-C, indicating that they want to quit
     except KeyboardInterrupt:
         print('\n' + '=' * 80 + '\n\nQUITTING\n\n' + '=' * 80 + '\n')
