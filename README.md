@@ -8,7 +8,9 @@ Storyteller is a token-based text generator that can take in either user input o
       4. 1558M
 
 
-The user is able to select any of these models and apply them to a writing style of their choice, e.g. the user could create a model that uses Shakespearean sonnets or the works of John Keats, and the models would generate text based on these writing styles, optionally with a custom prompt from the user. This software was created for my year 12 major work
+The user is able to select any of these models and apply them to a writing style of their choice, e.g. the user could create a model that uses Shakespearean sonnets or the works of John Keats, and the models would generate text based on these writing styles, optionally with a custom prompt from the user. 
+
+This software was created for my year 12 major work; many features and seemingly unnecessary inclusions in the package were required for my assignment. Regardless, this package will work for anyone, whether a developer curious in how GPT-2 works, or a consumer who just wants a friend to tell a story for them.
 
 ## Installation
 

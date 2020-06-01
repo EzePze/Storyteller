@@ -43,7 +43,7 @@ def interact_model(
      (i.e. contains the <model_name> folder)
     """
     if not custom:
-        print('Generating text with prompt:\n\n "%s"\n\n\n' % (raw_text))
+        print('\nGenerating text with prompt:\n\n "%s"\n\n\n' % (raw_text))
 
     models_dir = os.path.expanduser(os.path.expandvars(models_dir))
     if batch_size is None:
@@ -76,10 +76,10 @@ def interact_model(
         saver.restore(sess, ckpt)
 
         if custom:
-            custom_text = input("Model prompt >>> ")
+            custom_text = input("\nModel prompt >>> ")
             while not custom_text:
                 print('Prompt should not be empty!')
-                custom_text = input("Model prompt >>> ")
+                custom_text = input("\nModel prompt >>> ")
             raw_text += ' ' + custom_text
             print('Generating text with prompt:\n\n "%s"\n\n\n' % (custom_text))
         context_tokens = enc.encode(raw_text)
