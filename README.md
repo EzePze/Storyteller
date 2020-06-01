@@ -1,5 +1,19 @@
 # Storyteller
 
+- [Storyteller](#storyteller)
+  - [Installation](#installation)
+  - [Login Screen](#login-screen)
+    - [Login](#login)
+    - [Register](#register)
+  - [Model Select](#model-select)
+    - [New Model](#new-model)
+    - [Delete Model](#delete-model)
+  - [Text Generation](#text-generation)
+  - [Full Examples](#full-examples)
+    - [Custom Prompt Text Generation](#custom-prompt-text-generation)
+    - [Creating and Deleting Models](#creating-and-deleting-models)
+    - [Generating Text From Text File Input](#generating-text-from-text-file-input)
+
 Storyteller is a token-based text generator that can take in either user input or use a random prompt from a text file the user has specified. The architecture is based on OpenAI's GPT-2 Transformer model, and includes models of varying complexities, listed as follows:
 
       1. 124M
@@ -7,8 +21,7 @@ Storyteller is a token-based text generator that can take in either user input o
       3. 774M
       4. 1558M
 
-
-The user is able to select any of these models and apply them to a writing style of their choice, e.g. the user could create a model that uses Shakespearean sonnets or the works of John Keats, and the models would generate text based on these writing styles, optionally with a custom prompt from the user. 
+The user is able to select any of these models and apply them to a writing style of their choice, e.g. the user could create a model that uses Shakespearean sonnets or the works of John Keats, and the models would generate text based on these writing styles, optionally with a custom prompt from the user.
 
 This software was created for my year 12 major work; many features and seemingly unnecessary inclusions in the package were required for my assignment. Regardless, this package will work for anyone, whether a developer curious in how GPT-2 works, or a consumer who just wants a friend to tell a story for them.
 
@@ -34,13 +47,6 @@ Input 'y' and press enter, and then the models will begin to download. After thi
 
 The program will begin with a login screen, displaying the following:
 
-       _________ __                       ___________    .__  .__
-      /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________
-      \_____  \    __\/  _ \_  __ \   |  |  |    |_/ __ \|  | |  | _/ __ \_  __ \
-      /        \|  | (  (_) |  | \/\___  |  |    |\  ___/|  |_|  |_\  ___/|  | \/
-     /_______  /|__|  \____/|__|   /_____|  |____| \___  |____/____/\___  |__|
-             \/                    \/                  \/               \/
-
     Welcome To StoryTeller.
 
     Do you wish to log in, or register a new user?
@@ -48,7 +54,7 @@ The program will begin with a login screen, displaying the following:
     [L]ogin
     [R]egister
 
-All of the selection screens work by the format of [O]ption or [2] Option, where the key required to select the option is whatever is captured by the square brackets. For example, to select 'Option', the user would input an 'o' or 'O' in the first example, and a '2' in the second. 
+All of the selection screens work by the format of [O]ption or [2] Option, where the key required to select the option is whatever is captured by the square brackets. For example, to select 'Option', the user would input an 'o' or 'O' in the first example, and a '2' in the second.
 
 The two options for the login screen are the following:
 
