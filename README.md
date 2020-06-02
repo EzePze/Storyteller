@@ -56,6 +56,8 @@ The program will begin with a login screen, displaying the following:
 
 All of the selection screens work by the format of [O]ption or [2] Option, where the key required to select the option is whatever is captured by the square brackets. For example, to select 'Option', the user would input an 'o' or 'O' in the first example, and a '2' in the second.
 
+At any point that requires input, you can type 'help' to bring up this screen, the user guide, or 'quit' to immediately quit the software. You can also quit at any point by pressing Ctrl-C.
+
 The two options for the login screen are the following:
 
 ### Login

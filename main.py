@@ -19,9 +19,14 @@ import re
 import generator
 import hashlib
 import random
+import queue
 import numpy as np
+import signal
+
+# This stops the Tensorflow warinings from appearing, such as 'Using tensorflow backend' and stastistics about CPU/GPU usage
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+# The entire program is in a function so it can be used as a library instead of a standalone program
 def main():
     """
     STORYTELLER
@@ -35,8 +40,35 @@ def main():
 
     The names of these models represent how many parameters they have; essentially, the higher the number, the more complex the model.
 
-
     """
+    def filter_input(string = ''):
+        a = input(string)
+        if a == 'help':
+            os.system('open onlineHelp.pdf')
+            print('\n\n----------------Opening user guide------------------\n\nReturning to input screen...\n\n')
+            if string == '':
+                return filter_input('>>> ')
+            else:
+                return filter_input(string)
+        elif a == 'quit':
+            print('\n\n' + '=' * 80 + '\n\nQUITTING\n\n' + '=' * 80 + '\n')
+            sys.exit()
+        else:
+            return a
+        
+
+    # def handler(signum, frame):
+
+    #     option = input('\n\nWould you like to see the user guide or would you like to quit? (U/Q)\n\n').lower()
+    #     if option == 'u':
+    #         os.system('open OnlineHelp.pdf')
+    #     elif option == 'q':
+    #         print('\n\n' + '=' * 80 + '\n\nQUITTING\n\n' + '=' * 80 + '\n')
+    #         sys.exit()
+    #     else:
+    #         print('\n\nReturning to program...\n\n')
+    
+    # signal.signal(signal.SIGINT, handler)
     # Class for every user; ensures that each user has their own model list and subsequent model_dict that gets edited, rather than a collective pool
     class User:
         # On initialisation, create a username, password, path, and modelList within that path
@@ -66,9 +98,9 @@ def main():
         #       test: Boolean flag to be used in the test driver, signifies that the result should be returned if successful
         def create_model(self, name='', data='', test=False):
             if not name:
-                name = input('\nEnter the name for your new model: ').lower()
+                name = filter_input('\nEnter the name for your new model: ').lower()
             if not data:
-                data = input(
+                data = filter_input(
                     '\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
 
             # Ensures that *data* exists
@@ -77,7 +109,7 @@ def main():
                     return True
                 print(
                     '\nInvalid file. Are you sure the file \'%s\' is in the /Storyteller folder?\n' % data)
-                data = input(
+                data = filter_input(
                     '\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
 
             # Ensures that the user has not already made a model with name *name*
@@ -162,19 +194,18 @@ def main():
         for i in model_dict:
             print('[%d] %s' % (i, model_dict[i].title()))
         print()
-        model_select = int(input())
+        model_select = int(filter_input())
         print()
         return model_select
 
     # Gets whether the user wishes to login or register a new user
     def get_login():
-        return input('Welcome To StoryTeller.\n\nDo you wish to log in, or register a new user?\n\n[L]ogin\n[R]egister\n\n').upper()
+        return filter_input('Welcome To StoryTeller.\n\nDo you wish to log in, or register a new user?\n\n[L]ogin\n[R]egister\n\n').upper()
 
     print("  _________ __                       ___________    .__  .__                ")
     print(" /   _____//  |_  ___________ ___.__.\__    ___/___ |  | |  |   ___________ ")
     print(" \_____  \    __\/  _ \_  __ \   |  |  |    |_/ __ \|  | |  | _/ __ \_  __ \ ")
-    print(
-        " /        \|  | (  (_) |  | \/\___  |  |    |\  ___/|  |_|  |_\  ___/|  | \/")
+    print(" /        \|  | (  (_) |  | \/\___  |  |    |\  ___/|  |_|  |_\  ___/|  | \/")
     print("/_______  /|__|  \____/|__|   /_____|  |____| \___  |____/____/\___  |__|   ")
     print("        \/                    \/                  \/               \/       ")
     print("")
@@ -183,7 +214,7 @@ def main():
 
     # Checks if the user has the models installed; if not, install them using the 'download_models' script. This will run on the user's first usage of StoryTeller, as the models are ~ 15GB in size and so will not be packaged in the git repository
     if not os.path.isdir('models'):
-        if input('It seems that you do not have the required models downloaded. These are required to generate text, and are, in total, approximately 10GB in size. Would you like to install them now? (y/n)\n\n').lower() == 'y':
+        if filter_input('It seems that you do not have the required models downloaded. These are required to generate text, and are, in total, approximately 10GB in size. Would you like to install them now? (y/n)\n\n').lower() == 'y':
             print(
                 '---------------------------\nBEGIN INITIALISATION\n---------------------------\n')
             download_models.download()
@@ -208,7 +239,7 @@ def main():
             credentials = read_data("users.txt")
             rows = credentials.split("\n")
             i = 0
-            username = input("Username: ").lower()
+            username = filter_input("Username: ").lower()
             password = getpass.getpass("Password: ").lower()
 
             # Hashes the inputted password, and compares that against the hashes in the text file. Since the hashes are computed with the same algorithm and with no random elements, the hashed password the user attempts to login with will always match the hashed password on the text file, assuming the plaintext password in both situations are the same
@@ -229,7 +260,7 @@ def main():
 
         # If the user wishes to register, create an instance of the 'User' class and initialise a directory within the 'Users' folder that contains a new modelList with the default models already written
         else:
-            username = input('Enter a username: ')
+            username = filter_input('Enter a username: ')
             password = getpass.getpass('\nEnter a password: ')
             if username in read_data('users.txt'):
                 print('Username "%s" already exists!' % username)
@@ -265,8 +296,8 @@ def main():
                 for i in model_dict:
                     print('[%d] %s' % (i - 2, model_dict[i].title()))
                 print()
-                name = int(input())
-                if input('Are you sure you wish to delete model \'%s\'? (y/n)\n\n' % model_dict[name + 2]) == 'y':
+                name = int(filter_input())
+                if filter_input('Are you sure you wish to delete model \'%s\'? (y/n)\n\n' % model_dict[name + 2]) == 'y':
                     print()
                     user.delete_model(model_dict[name + 2])
                     #model_dict = user.update_dict()
@@ -284,7 +315,7 @@ def main():
         chosen_model = model_dict[model_select]
 
         # Prompt the user to choose between a custom input and a text file input
-        custom = (input(
+        custom = (filter_input(
             'Select a mode:\n\n[C]ustom prompt\n[T]ext file prompt\n\n').upper() == "C")
 
         # Split the text file into words, and then construct a base prompt consisting of 200 words
@@ -298,7 +329,7 @@ def main():
         complex_dict = {'0': '124M', '1': '355M', '2': '774M', '3': '1558M'}
 
         # Get complexity choice from user, and display the different complexities visually
-        complexity = complex_dict[input(
+        complexity = complex_dict[filter_input(
             '\nChoose the level of complexity for the model:\n\n[0] Speed [----------] Quality [--        ]\n[1] Speed [-------   ] Quality [----      ]\n[2] Speed [----      ] Quality [-------   ]\n[3] Speed [--        ] Quality [----------]\n\n')]
 
         # Using the 'generator.py' module, generate text using the parameters decided by the user
@@ -307,10 +338,12 @@ def main():
 
 # If the 'main.py' program is the program being currently run, perform the following actions. This allows the entirety of 'Storyteller' to be used as an open source library for other developers -- they can simply use the 'main' function and have 'main.py' act as a library instead of a standalone program
 if __name__ == '__main__':
+    # 'fire' allows command line operations for python programs; it is what allows the '--help' function to work
     try:
-        # 'fire' allows command line operations for python programs; it is what allows the '--help' function to work
         fire.Fire(main)
 
-    # Keep running the 'while True' loop in 'main' until the user interrupts with Ctrl-C, indicating that they want to quit
+    # Keep running the 'while True' loop in 'main' until the user interrupts with Ctrl-C, indicating that they want to quit. They can also quit by typing 'quit' at any input prompt
     except KeyboardInterrupt:
-        print('\n' + '=' * 80 + '\n\nQUITTING\n\n' + '=' * 80 + '\n')
+        print('\n\n' + '=' * 80 + '\n\nQUITTING\n\n' + '=' * 80 + '\n')
+        sys.exit()
+    
