@@ -22,9 +22,9 @@ def interact_model(
     nsamples=1,
     batch_size=1,
     length=None,
-    temperature=1,
+    temperature=1.2,
     top_k=40,
-    top_p=1,
+    top_p=0.9,
     models_dir='models',
 ):
 

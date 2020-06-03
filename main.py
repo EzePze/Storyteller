@@ -31,30 +31,25 @@ def main():
     """
     STORYTELLER
 
-    StoryTeller is an AI driven story generation software powered, in part, by OpenAI's gpt-2 model -- an unsupervised learning model that comes in four different versions with varying amounts of paramaters, all of which are included in this package: 
-
-      - 124M
-      - 355M
-      - 774M
-      - 1558M
-
-    The names of these models represent how many parameters they have; essentially, the higher the number, the more complex the model.
+    This is a quick guide to use the software. The installation guide is included within the 'onlineHelp' pdf, as well as all the information you may need in order to use the software. At any point, you can bring up this online help by entering 'help', or exit the program by entering 'quit'.
 
     """
+
+    # Filtering process for every input. Before every input is used as an operand, it gets checked to see whether it was the user trying to bring up the online help or quit. If 'help', the function recursively returns another filtered input until the user inputs something other than 'help'.
     def filter_input(string = ''):
-        a = input(string)
-        if a == 'help':
+        value = input(string)
+        if value == 'help':
             os.system('open onlineHelp.pdf')
             print('\n\n----------------Opening user guide------------------\n\nReturning to input screen...\n\n')
             if string == '':
                 return filter_input('>>> ')
             else:
                 return filter_input(string)
-        elif a == 'quit':
+        elif value == 'quit':
             print('\n\n' + '=' * 80 + '\n\nQUITTING\n\n' + '=' * 80 + '\n')
             sys.exit()
         else:
-            return a
+            return value
         
 
     # def handler(signum, frame):
@@ -98,8 +93,12 @@ def main():
         #       test: Boolean flag to be used in the test driver, signifies that the result should be returned if successful
         def create_model(self, name='', data='', test=False):
             if not name:
-                name = filter_input('\nEnter the name for your new model: ').lower()
+                if test and not data:
+                    return True
+                name = filter_input('\nEnter the name for your new model: ')
             if not data:
+                if test and name == 'model':
+                    return True
                 data = filter_input(
                     '\nEnter the name of the text file to be used for modelling (needs to be in the /Storyteller folder): ')
 
@@ -131,14 +130,13 @@ def main():
 
         # Essentially the 'create_model' function in reverse, but works even if the model text file is already deleted but the model is still in the user's modelList, and vice versa
         def delete_model(self, name):
-            oldList = read_data(os.path.join(self.modelList)).lower()
+            oldList = read_data(os.path.join(self.modelList))
             oldList = oldList.replace(name, '')
             with open(os.path.join(self.modelList), 'w') as newList:
                 newList.write(oldList)
             if os.path.isfile(name + ".txt"):
                 os.remove('%s.txt' % name)
             print('Deleted model \'%s\'\n' % name)
-            model_dict = user.update_dict()
 
     # Tests the 'create_model' function
     def model_config_driver(user):
@@ -177,8 +175,34 @@ def main():
         else:
             print('Test3 Failed.')
 
+        print('\nAttempting to create a model with no name...\n')
+        try:
+            assert not user.create_model(test=True)
+            print('Test4 failed.')
+        except:
+            print('Test4 passed.')
+
+        print('\nAttempting to create a model with a name, but no data file...\n')
+        
+        try:
+            assert not user.create_model('model', test=True)
+            print('Test5 failed.')
+        except:
+            print('Test5 passed.')
+
+        print('\nAttempting to create 9 models with the same data file... \n')
+
+        try:
+            for i in range(9):
+                user.create_model("test%s" % i, 'shakespeare.txt')
+            print('Test6 Passed.')
+        except:
+            print('Test6 Failed.')
+
         print('\nDeleting test models...\n')
         user.delete_model('shakespearecopy')
+        for i in range(9):
+            user.delete_model("test%s" % i)
         print('---------------------------\nEND DRIVER\n---------------------------\n')
 
     # reads in a text file and returns it
@@ -243,9 +267,10 @@ def main():
             password = getpass.getpass("Password: ").lower()
 
             # Hashes the inputted password, and compares that against the hashes in the text file. Since the hashes are computed with the same algorithm and with no random elements, the hashed password the user attempts to login with will always match the hashed password on the text file, assuming the plaintext password in both situations are the same
+            hashpass = hashlib.sha256(str.encode(password)).hexdigest()
             while not auth and i < len(rows) - 1:
                 compare = rows[i].split(', ')
-                if username == compare[0] and hashlib.sha256(str.encode(password)).hexdigest() == compare[1]:
+                if username == compare[0] and hashpass == compare[1]:
                     auth = True
                 i += 1
 
@@ -272,8 +297,7 @@ def main():
 
     # Once the user breaks the while loop, they have successfully logged in
     print("Login successful. Welcome, %s.\n" % user.username)
-
-    model_config_driver(user)
+    #model_config_driver(user)
 
     # Repeat indefinitely, until the user decides to quit
     while True:
@@ -300,10 +324,12 @@ def main():
                 if filter_input('Are you sure you wish to delete model \'%s\'? (y/n)\n\n' % model_dict[name + 2]) == 'y':
                     print()
                     user.delete_model(model_dict[name + 2])
-                    #model_dict = user.update_dict()
+                    model_dict = user.update_dict()
                     print('\nReturning to model selection screen...\n\n')
+
                 else:
                     print('Cancelling...\n\nReturning to model selection...\n')
+
                 model_select = get_model_selection()
 
             # Account for if the user inputs a number outside the range, or an invalid data type
