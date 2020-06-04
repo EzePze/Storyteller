@@ -51,19 +51,6 @@ def main():
         else:
             return value
         
-
-    # def handler(signum, frame):
-
-    #     option = input('\n\nWould you like to see the user guide or would you like to quit? (U/Q)\n\n').lower()
-    #     if option == 'u':
-    #         os.system('open OnlineHelp.pdf')
-    #     elif option == 'q':
-    #         print('\n\n' + '=' * 80 + '\n\nQUITTING\n\n' + '=' * 80 + '\n')
-    #         sys.exit()
-    #     else:
-    #         print('\n\nReturning to program...\n\n')
-    
-    # signal.signal(signal.SIGINT, handler)
     # Class for every user; ensures that each user has their own model list and subsequent model_dict that gets edited, rather than a collective pool
     class User:
         # On initialisation, create a username, password, path, and modelList within that path
@@ -138,7 +125,16 @@ def main():
                 os.remove('%s.txt' % name)
             print('Deleted model \'%s\'\n' % name)
 
-    # Tests the 'create_model' function
+    # Tests the 'create_model' function. The idea was to test every possible angle a user could conceivable try to create a model, including:
+
+    #     1 - making a copy with the same text file
+    #     2 - making a model with a data file that does not exist
+    #     3 - making multiple models with the same name
+    #     4 - making a model with no name
+    #     5 - making a model with a name but no data file
+    #     6 - making multiple models quickly that share the same data file
+
+    # The driver tests all of these against expected outputs, and prints whether the actual outputs match the expected outputs.
     def model_config_driver(user):
         print('---------------------------\nBEGIN DRIVER\n---------------------------\n')
         print('Attempting to create model named "shakespearecopy" with data "shakespeare.txt"...')
@@ -236,6 +232,10 @@ def main():
     print("")
     print("")
 
+    print("-----------------[IMPORTANT]------------------\n")
+    print("IF AT ANY TIME YOU ARE UNSURE WHAT TO DO, TYPE 'help' AND A USER GUIDE PDF WILL APPEAR THAT WILL LET YOU SELECT THE AREA YOU ARE UNSURE ABOUT. THERE IS ALSO A REFERENCE MANUAL INCLUDED WITHIN THE SOFTWARE PACKAGE THAT DETAILS EVERY POSSIBLE ACTION YOU CAN PERFORM AT ANY POINT. FINALLY, YOU CAN QUIT AT ANY TIME BY EITHER TYPING 'quit' OR BY PRESSING CTRL-C.\n")
+    print("----------------------------------------------\n")
+
     # Checks if the user has the models installed; if not, install them using the 'download_models' script. This will run on the user's first usage of StoryTeller, as the models are ~ 15GB in size and so will not be packaged in the git repository
     if not os.path.isdir('models'):
         if filter_input('It seems that you do not have the required models downloaded. These are required to generate text, and are, in total, approximately 10GB in size. Would you like to install them now? (y/n)\n\n').lower() == 'y':
@@ -321,14 +321,14 @@ def main():
                     print('[%d] %s' % (i - 2, model_dict[i].title()))
                 print()
                 name = int(filter_input())
-                if filter_input('Are you sure you wish to delete model \'%s\'? (y/n)\n\n' % model_dict[name + 2]) == 'y':
+                if filter_input('\nAre you sure you wish to delete model \'%s\'? (y/n)\n\n' % model_dict[name + 2]) == 'y':
                     print()
                     user.delete_model(model_dict[name + 2])
                     model_dict = user.update_dict()
                     print('\nReturning to model selection screen...\n\n')
 
                 else:
-                    print('Cancelling...\n\nReturning to model selection...\n')
+                    print('\nCancelling...\n\nReturning to model selection...\n')
 
                 model_select = get_model_selection()
 

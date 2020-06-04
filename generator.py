@@ -43,6 +43,8 @@ def interact_model(
 
     # top_k : Integer value controlling diversity. 1 means only 1 word is considered for each step (token), resulting in deterministic completions, while 40 means 40 words are considered at each step. 0 (default) is a special setting meaning no restrictions. 40 generally is a good value.
 
+    # top_p : Value from 0-1 that determines the cumulative probability threshold. Essentially, the only tokens that are considered are the ones that cumulatively sum to a higher value than the threshold. The higher the value, the more random the generation.
+
     # models_dir : path to parent folder containing model subfolders (i.e. contains the <model_name> folder)
     # ======================================================================================
 
@@ -118,8 +120,9 @@ def interact_model(
                 print("=" * 80)
                 print(text)
         print("=" * 80)
+        print("")
 
 
 # Allows the script to be used on its own; does not need to be used by main.py
 if __name__ == '__main__':
-    fire.Fire(interact_model)
+    fire.Fire(interact_model(False, 'Test Prompt. The model will generate from this:'))
